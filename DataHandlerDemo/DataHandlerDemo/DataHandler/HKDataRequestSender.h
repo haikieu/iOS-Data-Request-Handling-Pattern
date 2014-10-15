@@ -18,46 +18,49 @@ typedef NS_ENUM(NSUInteger, HKDataRequestStatus) {
 
 @protocol HKDataRequestSender <HKDataRequestDelegate>
 
-@required
+-(instancetype)initSender:(id<HKDataRequestDelegate>) sender withRoot:(id<HKDataRequestSender>) root;
 
-- (id<HKDataRequestSender>) rootSender;
-- (id<HKDataRequestSender>) roofSender;
-- (id<HKDataRequestDelegate>) sender;
-- (HKDataRequestStatus) requestStatus;
+@end
+
+
+@interface HKDataRequestSender : NSObject <HKDataRequestSender>
+
+#pragma node bodyß
+@property(nonatomic,strong) id<HKDataRequestDelegate> sender;
+@property(nonatomic,assign) HKDataRequestStatus requestStatus;
+@property(nonatomic,strong) NSString * requestTag;
+
+#pragma request business
 - (void) cancel;
 
-@optional
+#pragma GUI display
+@property(nonatomic,assign) BOOL isBlockingUI;
+@property(nonatomic,strong) NSString * UITitle;
+@property(nonatomic,strong) NSString * UIMessage;
 
-- (id<HKDataRequestSender>) finalRoot;
-- (id<HKDataRequestSender>) finalRoof;
+#pragma node linking algorithm
+
+@property(nonatomic,strong) HKDataRequestSender * rootSender;
+@property(nonatomic,strong) HKDataRequestSender * roofSender;
+
+@property(nonatomic,readonly) HKDataRequestSender * finalRoot;
+@property(nonatomic,readonly) HKDataRequestSender * finalRoof;
+
+- (NSUInteger) totalLevel;
+- (NSUInteger) currentLevel;
+- (NSUInteger) upLevel;
+- (NSUInteger) downLevel;
 
 - (BOOL) isFinalRoot;
 - (BOOL) isFinalRoof;
 - (BOOL) isMediator;
+
+#pragma node debug
 
 #if DEBUG
 
 - (void) stackTrace;
 
 #endif
-
-@end
-
-@interface HKDataRequestSender : NSObject <HKDataRequestSender>
-
--(instancetype)initSender:(id<HKDataRequestDelegate>) sender withRoot:(HKDataRequestSender*) root;
-@property(nonatomic,readonly) id<HKDataRequestDelegate> sender;
-@property(nonatomic,weak) HKDataRequestSender * rootSender;
-@property(nonatomic,weak) HKDataRequestSender * roofSender;
-
-@property(nonatomic,readonly) HKDataRequestSender * finalRoot;
-@property(nonatomic,readonly) HKDataRequestSender * finalRoof;
-
-@property(nonatomic,assign) HKDataRequestStatus requestStatus;
-
-- (NSUInteger) totalLevel;
-- (NSUInteger) currentLevel;
-- (NSUInteger) upLevel;
-- (NSUInteger) downLevel;
 
 @end

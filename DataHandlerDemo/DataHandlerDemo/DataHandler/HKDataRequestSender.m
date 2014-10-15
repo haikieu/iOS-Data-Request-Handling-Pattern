@@ -13,6 +13,8 @@
     HKDataRequestStatus _requestStatus;
 }
 
+@synthesize requestTag=_requestTag;
+
 -(HKDataRequestStatus)requestStatus
 {
     return _requestStatus;
@@ -39,13 +41,25 @@
     return self;
 }
 
--(void)networkActivityStarted {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+#pragma node body
+
+-(NSString *)requestTag
+{
+    if([self isFinalRoot])
+        return _requestTag;
+    else
+        return [[self finalRoot] requestTag];
 }
 
--(void)networkActivityEnded {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+-(void)setRequestTag:(NSString *)requestTag
+{
+    if([self isFinalRoot])
+        _requestTag = requestTag;
+    else
+        return [[self finalRoot] setRequestTag:requestTag];
 }
+
+#pragma request business
 
 -(void)cancel
 {
@@ -60,25 +74,56 @@
 
 -(void)dataRequestComplete:(id<HKDataRequestResult>)result
 {
+    //TODO - need verify this condition
     if([self requestStatus]==HKDataRequestStatusCancel)
         return;
     
     _requestStatus = HKDataRequestStatusCompleted;
     
-    if([self respondsToSelector:@selector(dataRequestPreComplete:)])
+    if([_sender respondsToSelector:@selector(dataRequestPreComplete:)])
     {
-        [self dataRequestPreComplete:result];
+        [_sender dataRequestPreComplete:result];
     }
 
-    [[self sender] dataRequestComplete:result];
+    [_sender dataRequestComplete:result];
     
-    if([self respondsToSelector:@selector(dataRequestPostComplete:)])
+    if([_sender respondsToSelector:@selector(dataRequestPostComplete:)])
     {
-        [self dataRequestPostComplete:result];
+        [_sender dataRequestPostComplete:result];
     }
     
+    //forward the result to original sender
     [[self rootSender] dataRequestComplete:result];
+    
+    //decouple node linking by set all properties by weak
+    [self decoupleRequestLinking];
 }
+
+#pragma memory management
+
+- (void) tightRequestLinking
+{
+    
+}
+
+- (void) decoupleRequestLinking
+{
+    //TODO
+}
+
+- (void) neutrilizeRequestLinking
+{
+    //TODO
+}
+
+
+-(void)dealloc
+{
+    [self neutrilizeRequestLinking];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma node linking algorithm
 
 -(HKDataRequestSender *)finalRoot
 {
@@ -131,6 +176,10 @@
     return (self.rootSender != nil) + [self.rootSender downLevel];
 }
 
+#ifdef DEBUG
+
+#pragma stack trace
+
 -(void)stackTrace
 {
     [[self finalRoot] printTraceInfo];
@@ -145,8 +194,6 @@
 -(NSString *)statusInfo
 {
     switch (_requestStatus) {
-        case HKDataRequestStatusCancel | HKDataRequestStatusDoing:
-            return @"Doing & Cancel";
         case HKDataRequestStatusCancel:
             return @"Cancel";
         case HKDataRequestStatusCompleted:
@@ -166,5 +213,7 @@
 
     return [NSString stringWithFormat:@"[%lu]%@ status:%@",requestOrder, senderClass,statusInfo];
 }
+
+#endif
 
 @end
