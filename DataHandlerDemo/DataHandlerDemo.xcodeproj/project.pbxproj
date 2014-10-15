@@ -48,6 +48,7 @@
 		4237B26619ED464300E24574 /* HKDataRequestResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKDataRequestResult.m; sourceTree = "<group>"; };
 		4237B26819ED465B00E24574 /* HKDataRequestSender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKDataRequestSender.h; sourceTree = "<group>"; };
 		4237B26919ED465B00E24574 /* HKDataRequestSender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKDataRequestSender.m; sourceTree = "<group>"; };
+		849E583619EE8A7F0008A711 /* HKDataRequestPattern.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HKDataRequestPattern.h; sourceTree = "<group>"; };
 		84B89D7C19EE402A00DCA8F0 /* HKDataRequestCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKDataRequestCenter.h; sourceTree = "<group>"; };
 		84B89D7D19EE402A00DCA8F0 /* HKDataRequestCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKDataRequestCenter.m; sourceTree = "<group>"; };
 		84B89D7F19EE405900DCA8F0 /* HKDataRequestCenterDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HKDataRequestCenterDelegate.h; sourceTree = "<group>"; };
@@ -158,6 +159,7 @@
 				84B89D7F19EE405900DCA8F0 /* HKDataRequestCenterDelegate.h */,
 				84B89D7C19EE402A00DCA8F0 /* HKDataRequestCenter.h */,
 				84B89D7D19EE402A00DCA8F0 /* HKDataRequestCenter.m */,
+				849E583619EE8A7F0008A711 /* HKDataRequestPattern.h */,
 			);
 			name = DataHandler;
 			sourceTree = "<group>";
