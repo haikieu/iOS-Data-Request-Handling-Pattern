@@ -20,24 +20,35 @@ static id __obj;
     return __obj;
 }
 
--(void)networkActivityStarted:(BOOL) isBlock
+-(void)networkActivityStarted
 {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     
-    if([_delegate respondsToSelector:@selector(networkActivityStarted:)])
-       [_delegate networkActivityStarted:isBlock];
+    if([_delegate respondsToSelector:@selector(networkActivityStarted)])
+       [_delegate networkActivityStarted];
 }
--(void)networkActivityEnded:(BOOL) isBlock
+-(void)networkActivityEnded
 {
-    if([_delegate respondsToSelector:@selector(networkActivityEnded:)])
-        [_delegate networkActivityEnded:isBlock];
+    if([_delegate respondsToSelector:@selector(networkActivityEnded)])
+        [_delegate networkActivityEnded];
     
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
--(void)networkActivityChanged:(BOOL) isBlock status:(NSString*)status
+
+-(void)networkActivityBlockingStarted
 {
-    if([_delegate respondsToSelector:@selector(networkActivityChanged:status:)])
-        [_delegate networkActivityChanged:isBlock status:status];
+    if([_delegate respondsToSelector:@selector(networkActivityBlockingStarted)])
+        [_delegate networkActivityBlockingStarted];
+}
+-(void)networkActivityBlockingEnded
+{
+    if([_delegate respondsToSelector:@selector(networkActivityBlockingEnded)])
+        [_delegate networkActivityBlockingEnded];
+}
+-(void)networkActivityBlockingChanged:(NSString*)status
+{
+    if([_delegate respondsToSelector:@selector(networkActivityBlockingChanged:)])
+        [_delegate networkActivityBlockingChanged:status];
 }
 
 @end

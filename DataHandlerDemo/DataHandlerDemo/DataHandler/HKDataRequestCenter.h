@@ -14,4 +14,7 @@
 
 +(instancetype)defaultCenter;
 
+@property NSOperationQueue * blockingRequestQueue;
+@property NSOperationQueue * requestQueue;
+
 @end

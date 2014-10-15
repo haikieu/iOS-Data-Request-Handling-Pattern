@@ -7,7 +7,7 @@
 //
 
 #import "HKDataRequestSender.h"
-
+#import <UIKit/UIKit.h>
 @implementation HKDataRequestSender
 {
     HKDataRequestStatus _requestStatus;
@@ -39,6 +39,13 @@
     return self;
 }
 
+-(void)networkActivityStarted {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+}
+
+-(void)networkActivityEnded {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+}
 
 -(void)cancel
 {

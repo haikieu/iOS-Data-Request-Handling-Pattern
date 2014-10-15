@@ -10,10 +10,10 @@
 #import "HKDataRequestDelegate.h"
 
 typedef NS_ENUM(NSUInteger, HKDataRequestStatus) {
-    HKDataRequestStatusUnknown = 0,
-    HKDataRequestStatusDoing = 1<<0,
+    HKDataRequestStatusUnknown   = 0,
+    HKDataRequestStatusDoing     = 1 << 0,
     HKDataRequestStatusCompleted = 1 << 1,
-    HKDataRequestStatusCancel = 1 << 2
+    HKDataRequestStatusCancel    = 1 << 2
 };
 
 @protocol HKDataRequestSender <HKDataRequestDelegate>

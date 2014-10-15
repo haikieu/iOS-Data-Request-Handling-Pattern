@@ -8,8 +8,11 @@
 
 @protocol HKDataRequestCenterDelegate <NSObject>
 
--(void)networkActivityStarted:(BOOL) isBlock;
--(void)networkActivityEnded:(BOOL) isBlock;
--(void)networkActivityChanged:(BOOL) isBlock status:(NSString*)status;
+-(void)networkActivityStarted;
+-(void)networkActivityEnded;
+
+-(void)networkActivityBlockingStarted;
+-(void)networkActivityBlockingEnded;
+-(void)networkActivityBlockingChanged:(NSString*)status;
 
 @end
