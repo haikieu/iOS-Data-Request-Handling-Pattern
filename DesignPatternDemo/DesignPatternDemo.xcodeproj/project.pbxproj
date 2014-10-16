@@ -15,6 +15,9 @@
 		42B8F39E19EEF4DB004AD56A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42B8F39D19EEF4DB004AD56A /* Images.xcassets */; };
 		42B8F3A119EEF4DB004AD56A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 42B8F39F19EEF4DB004AD56A /* LaunchScreen.xib */; };
 		42B8F3AD19EEF4DB004AD56A /* DesignPatternDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B8F3AC19EEF4DB004AD56A /* DesignPatternDemoTests.m */; };
+		84CABCAC19EF7EB10010C541 /* HKDataRequestCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CABCA419EF7EB10010C541 /* HKDataRequestCenter.m */; };
+		84CABCAD19EF7EB10010C541 /* HKDataRequestResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CABCA919EF7EB10010C541 /* HKDataRequestResult.m */; };
+		84CABCAE19EF7EB10010C541 /* HKDataRequestSender.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CABCAB19EF7EB10010C541 /* HKDataRequestSender.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +46,15 @@
 		42B8F3A619EEF4DB004AD56A /* DesignPatternDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DesignPatternDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		42B8F3AB19EEF4DB004AD56A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		42B8F3AC19EEF4DB004AD56A /* DesignPatternDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DesignPatternDemoTests.m; sourceTree = "<group>"; };
+		84CABCA319EF7EB10010C541 /* HKDataRequestCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKDataRequestCenter.h; sourceTree = "<group>"; };
+		84CABCA419EF7EB10010C541 /* HKDataRequestCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKDataRequestCenter.m; sourceTree = "<group>"; };
+		84CABCA519EF7EB10010C541 /* HKDataRequestCenterDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKDataRequestCenterDelegate.h; sourceTree = "<group>"; };
+		84CABCA619EF7EB10010C541 /* HKDataRequestDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKDataRequestDelegate.h; sourceTree = "<group>"; };
+		84CABCA719EF7EB10010C541 /* HKDataRequestPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKDataRequestPattern.h; sourceTree = "<group>"; };
+		84CABCA819EF7EB10010C541 /* HKDataRequestResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKDataRequestResult.h; sourceTree = "<group>"; };
+		84CABCA919EF7EB10010C541 /* HKDataRequestResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKDataRequestResult.m; sourceTree = "<group>"; };
+		84CABCAA19EF7EB10010C541 /* HKDataRequestSender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKDataRequestSender.h; sourceTree = "<group>"; };
+		84CABCAB19EF7EB10010C541 /* HKDataRequestSender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKDataRequestSender.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +96,7 @@
 		42B8F38C19EEF4DA004AD56A /* DesignPatternDemo */ = {
 			isa = PBXGroup;
 			children = (
+				84CABCA119EF7EB10010C541 /* Classes */,
 				42B8F39119EEF4DA004AD56A /* AppDelegate.h */,
 				42B8F39219EEF4DA004AD56A /* AppDelegate.m */,
 				42B8F39419EEF4DA004AD56A /* FirstViewController.h */,
@@ -122,6 +135,31 @@
 				42B8F3AB19EEF4DB004AD56A /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		84CABCA119EF7EB10010C541 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				84CABCA219EF7EB10010C541 /* DataRequestCenter */,
+			);
+			name = Classes;
+			path = ../../Classes;
+			sourceTree = "<group>";
+		};
+		84CABCA219EF7EB10010C541 /* DataRequestCenter */ = {
+			isa = PBXGroup;
+			children = (
+				84CABCA319EF7EB10010C541 /* HKDataRequestCenter.h */,
+				84CABCA419EF7EB10010C541 /* HKDataRequestCenter.m */,
+				84CABCA519EF7EB10010C541 /* HKDataRequestCenterDelegate.h */,
+				84CABCA619EF7EB10010C541 /* HKDataRequestDelegate.h */,
+				84CABCA719EF7EB10010C541 /* HKDataRequestPattern.h */,
+				84CABCA819EF7EB10010C541 /* HKDataRequestResult.h */,
+				84CABCA919EF7EB10010C541 /* HKDataRequestResult.m */,
+				84CABCAA19EF7EB10010C541 /* HKDataRequestSender.h */,
+				84CABCAB19EF7EB10010C541 /* HKDataRequestSender.m */,
+			);
+			path = DataRequestCenter;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -225,9 +263,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				42B8F39919EEF4DA004AD56A /* SecondViewController.m in Sources */,
+				84CABCAE19EF7EB10010C541 /* HKDataRequestSender.m in Sources */,
 				42B8F39319EEF4DA004AD56A /* AppDelegate.m in Sources */,
+				84CABCAC19EF7EB10010C541 /* HKDataRequestCenter.m in Sources */,
 				42B8F39619EEF4DA004AD56A /* FirstViewController.m in Sources */,
 				42B8F39019EEF4DA004AD56A /* main.m in Sources */,
+				84CABCAD19EF7EB10010C541 /* HKDataRequestResult.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,6 +459,7 @@
 				42B8F3B219EEF4DB004AD56A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		42B8F3B319EEF4DB004AD56A /* Build configuration list for PBXNativeTarget "DesignPatternDemoTests" */ = {
 			isa = XCConfigurationList;
@@ -426,6 +468,7 @@
 				42B8F3B519EEF4DB004AD56A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
