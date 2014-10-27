@@ -10,25 +10,23 @@
 #import <UIKit/UIKit.h>
 #import <objc/message.h>
 #import <objc/runtime.h>
+
+@implementation HKDataRequest
+
+
+
+@end
+
 @implementation HKDataRequestSender
-{
-    HKDataRequestStatus _requestStatus;
-}
 
 @dynamic previousSender;
 @dynamic nextSender;
-@synthesize requestTag=_requestTag;
-
--(HKDataRequestStatus)requestStatus
-{
-    return _requestStatus;
-}
 
 - (instancetype)init
 {
     self = [super init];
     if (self) {
-        _requestStatus = HKDataRequestStatusDoing;
+        self.requestStatus = HKDataRequestStatusDoing;
     }
     return self;
 }
@@ -39,7 +37,7 @@
     if (self) {
         root.nextSender = self;
         self.previousSender = root;
-        _sender = sender;
+        self.sender = sender;
         root.requestStatus = self.requestStatus = root ? root.requestStatus : HKDataRequestStatusDoing;
     }
     return self;
@@ -50,7 +48,7 @@
 -(NSString *)requestTag
 {
     if([self isFirstSender])
-        return _requestTag;
+        return self.requestTag;
     else
         return [[self firstSender] requestTag];
 }
@@ -58,7 +56,7 @@
 -(void)setRequestTag:(NSString *)requestTag
 {
     if([self isFirstSender])
-        _requestTag = requestTag;
+        self.requestTag = requestTag;
     else
         return [[self firstSender] setRequestTag:requestTag];
 }
@@ -72,7 +70,7 @@
 
 -(void)cancelRequest
 {
-    _requestStatus |= HKDataRequestStatusCancel;
+    self.requestStatus |= HKDataRequestStatusCancel;
     [[self nextSender] cancelRequest];
 }
 
@@ -82,18 +80,18 @@
     if([self requestStatus]==HKDataRequestStatusCancel)
         return;
     
-    _requestStatus = HKDataRequestStatusCompleted;
+    self.requestStatus = HKDataRequestStatusCompleted;
     
-    if([_sender respondsToSelector:@selector(dataRequestPreComplete:)])
+    if([self.sender respondsToSelector:@selector(dataRequestPreComplete:)])
     {
-        [_sender dataRequestPreComplete:result];
+        [self.sender dataRequestPreComplete:result];
     }
 
-    [_sender dataRequestComplete:result];
+    [self.sender dataRequestComplete:result];
     
-    if([_sender respondsToSelector:@selector(dataRequestPostComplete:)])
+    if([self.sender respondsToSelector:@selector(dataRequestPostComplete:)])
     {
-        [_sender dataRequestPostComplete:result];
+        [self.sender dataRequestPostComplete:result];
     }
     
     //forward the result to original sender
@@ -247,7 +245,7 @@
 
 -(NSString *)statusInfo
 {
-    switch (_requestStatus) {
+    switch (self.requestStatus) {
         case HKDataRequestStatusCancel:
             return @"Cancel";
         case HKDataRequestStatusCompleted:

@@ -16,30 +16,41 @@ typedef NS_ENUM(NSUInteger, HKDataRequestStatus) {
     HKDataRequestStatusCancel    = 1 << 2
 };
 
-@protocol HKDataRequestSender <HKDataRequestDelegate>
+@protocol HKDataRequest <HKDataRequestDelegate>
 
--(instancetype)initSender:(id<HKDataRequestDelegate>) sender withRoot:(id<HKDataRequestSender>) root;
 
 @end
 
+@interface HKDataRequest : NSObject <HKDataRequest>
 
-@interface HKDataRequestSender : NSObject <HKDataRequestSender>
-
-#pragma node bodyß
+#pragma request body
 @property(nonatomic,strong) id<HKDataRequestDelegate> sender;
 @property(nonatomic,assign) HKDataRequestStatus requestStatus;
 @property(nonatomic,strong) NSString * requestTag;
-
-#pragma request business
-- (void) cancel;
 
 #pragma GUI display
 @property(nonatomic,assign) BOOL isBlockingUI;
 @property(nonatomic,strong) NSString * UITitle;
 @property(nonatomic,strong) NSString * UIMessage;
 
-#pragma node linking algorithm
+#pragma request business
+- (void) cancel;
 
+
+
+#if DEBUG
+
+#pragma node debug
+
+- (void) stackTrace;
+
+#endif
+
+@end
+
+@interface HKDataRequestSender : HKDataRequest
+
+#pragma node linking algorithm
 @property(nonatomic,assign) HKDataRequestSender * previousSender;
 @property(nonatomic,assign) HKDataRequestSender * nextSender;
 
@@ -55,12 +66,5 @@ typedef NS_ENUM(NSUInteger, HKDataRequestStatus) {
 - (BOOL) isLastSender;
 - (BOOL) isForwarder;
 
-#pragma node debug
-
-#if DEBUG
-
-- (void) stackTrace;
-
-#endif
 
 @end
