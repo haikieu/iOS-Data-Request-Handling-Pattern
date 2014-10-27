@@ -8,11 +8,15 @@
 
 #import "HKDataRequestSender.h"
 #import <UIKit/UIKit.h>
+#import <objc/message.h>
+#import <objc/runtime.h>
 @implementation HKDataRequestSender
 {
     HKDataRequestStatus _requestStatus;
 }
 
+@dynamic rootSender;
+@dynamic roofSender;
 @synthesize requestTag=_requestTag;
 
 -(HKDataRequestStatus)requestStatus
@@ -101,29 +105,79 @@
 
 #pragma memory management
 
+-(void)setRootSender:(HKDataRequestSender *)rootSender
+{
+    objc_setAssociatedObject(self, @selector(rootSender), rootSender,OBJC_ASSOCIATION_RETAIN);
+}
+
+-(void)setRoofSender:(HKDataRequestSender *)roofSender
+{
+    objc_setAssociatedObject(self, @selector(roofSender), roofSender,OBJC_ASSOCIATION_RETAIN);
+}
+
+-(HKDataRequestSender *)roofSender
+{
+    id objc = objc_getAssociatedObject(self, @selector(roofSender));
+    return objc;
+}
+-(HKDataRequestSender *)rootSender
+{
+    id objc = objc_getAssociatedObject(self, @selector(rootSender));
+    return objc;
+}
+
 - (void) tightRequestLinking
 {
-    
+    [self foreach:[self finalRoot] block:^(HKDataRequestSender *sender) {
+        [self tightRequestLinking:sender];
+    }];
+}
+
+-(void) tightRequestLinking:(HKDataRequestSender *)sender
+{
+    id objc = sender.rootSender;
+    if(objc)
+    objc_setAssociatedObject(sender, @selector(rootSender), objc, OBJC_ASSOCIATION_RETAIN);
+    objc = sender.roofSender;
+    if(objc)
+    objc_setAssociatedObject(sender, @selector(rootSender), objc, OBJC_ASSOCIATION_RETAIN);
 }
 
 - (void) decoupleRequestLinking
 {
-    //TODO
+    [self foreach:[self finalRoot] block:^(HKDataRequestSender *sender) {
+        [self decoupleRequestLinking:sender];
+    }];
 }
 
-- (void) neutrilizeRequestLinking
+- (void) decoupleRequestLinking:(HKDataRequestSender *)sender
 {
-    //TODO
+
+        id objc = sender.rootSender;
+        if(objc)
+            objc_setAssociatedObject(sender, @selector(rootSender), objc, OBJC_ASSOCIATION_ASSIGN);
+        objc = sender.roofSender;
+        if(objc)
+            objc_setAssociatedObject(sender, @selector(rootSender), objc, OBJC_ASSOCIATION_ASSIGN);
 }
 
 
 -(void)dealloc
 {
-    [self neutrilizeRequestLinking];
+    [self decoupleRequestLinking];
+    objc_removeAssociatedObjects(self);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma node linking algorithm
+
+-(void)foreach:(HKDataRequestSender*) root block:(void(^)(HKDataRequestSender* sender))doSomething
+{
+    if(doSomething)
+        doSomething(root);
+    
+    [self foreach:root.roofSender block:doSomething];
+}
 
 -(HKDataRequestSender *)finalRoot
 {
