@@ -135,10 +135,11 @@
 {
     id objc = sender.previousSender;
     if(objc)
-    objc_setAssociatedObject(sender, @selector(previousSender), objc, OBJC_ASSOCIATION_RETAIN);
+        objc_setAssociatedObject(sender, @selector(previousSender), objc, OBJC_ASSOCIATION_RETAIN);
+    
     objc = sender.nextSender;
     if(objc)
-    objc_setAssociatedObject(sender, @selector(nextSender), objc, OBJC_ASSOCIATION_RETAIN);
+        objc_setAssociatedObject(sender, @selector(nextSender), objc, OBJC_ASSOCIATION_RETAIN);
 }
 
 - (void) decoupleRequestLinking
@@ -150,13 +151,13 @@
 
 - (void) decoupleRequestLinking:(HKDataRequestSender *)sender
 {
-
-        id objc = sender.previousSender;
-        if(objc)
-            objc_setAssociatedObject(sender, @selector(previousSender), objc, OBJC_ASSOCIATION_ASSIGN);
-        objc = sender.nextSender;
-        if(objc)
-            objc_setAssociatedObject(sender, @selector(nextSender), objc, OBJC_ASSOCIATION_ASSIGN);
+    id objc = sender.previousSender;
+    if(objc)
+        objc_setAssociatedObject(sender, @selector(previousSender), objc, OBJC_ASSOCIATION_ASSIGN);
+    
+    objc = sender.nextSender;
+    if(objc)
+        objc_setAssociatedObject(sender, @selector(nextSender), objc, OBJC_ASSOCIATION_ASSIGN);
 }
 
 
