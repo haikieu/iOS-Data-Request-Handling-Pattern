@@ -40,20 +40,20 @@ typedef NS_ENUM(NSUInteger, HKDataRequestStatus) {
 
 #pragma node linking algorithm
 
-@property(nonatomic,assign) HKDataRequestSender * rootSender;
-@property(nonatomic,assign) HKDataRequestSender * roofSender;
+@property(nonatomic,assign) HKDataRequestSender * previousSender;
+@property(nonatomic,assign) HKDataRequestSender * nextSender;
 
-@property(nonatomic,readonly) HKDataRequestSender * finalRoot;
-@property(nonatomic,readonly) HKDataRequestSender * finalRoof;
+@property(nonatomic,readonly) HKDataRequestSender * firstSender;
+@property(nonatomic,readonly) HKDataRequestSender * lastSender;
 
 - (NSUInteger) totalLevel;
 - (NSUInteger) currentLevel;
 - (NSUInteger) upLevel;
 - (NSUInteger) downLevel;
 
-- (BOOL) isFinalRoot;
-- (BOOL) isFinalRoof;
-- (BOOL) isMediator;
+- (BOOL) isFirstSender;
+- (BOOL) isLastSender;
+- (BOOL) isForwarder;
 
 #pragma node debug
 

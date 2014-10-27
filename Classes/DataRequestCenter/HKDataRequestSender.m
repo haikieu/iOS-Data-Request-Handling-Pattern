@@ -15,8 +15,8 @@
     HKDataRequestStatus _requestStatus;
 }
 
-@dynamic rootSender;
-@dynamic roofSender;
+@dynamic previousSender;
+@dynamic nextSender;
 @synthesize requestTag=_requestTag;
 
 -(HKDataRequestStatus)requestStatus
@@ -35,10 +35,10 @@
 
 -(instancetype)initSender:(id<HKDataRequestDelegate>)sender withRoot:(HKDataRequestSender *)root
 {
-    self = [super init];
+    self = [self init];
     if (self) {
-        root.roofSender = self;
-        self.rootSender = root;
+        root.nextSender = self;
+        self.previousSender = root;
         _sender = sender;
         root.requestStatus = self.requestStatus = root ? root.requestStatus : HKDataRequestStatusDoing;
     }
@@ -49,31 +49,31 @@
 
 -(NSString *)requestTag
 {
-    if([self isFinalRoot])
+    if([self isFirstSender])
         return _requestTag;
     else
-        return [[self finalRoot] requestTag];
+        return [[self firstSender] requestTag];
 }
 
 -(void)setRequestTag:(NSString *)requestTag
 {
-    if([self isFinalRoot])
+    if([self isFirstSender])
         _requestTag = requestTag;
     else
-        return [[self finalRoot] setRequestTag:requestTag];
+        return [[self firstSender] setRequestTag:requestTag];
 }
 
 #pragma request business
 
 -(void)cancel
 {
-    [[self finalRoot] cancelRequest];
+    [[self firstSender] cancelRequest];
 }
 
 -(void)cancelRequest
 {
     _requestStatus |= HKDataRequestStatusCancel;
-    [[self roofSender] cancelRequest];
+    [[self nextSender] cancelRequest];
 }
 
 -(void)dataRequestComplete:(id<HKDataRequestResult>)result
@@ -97,7 +97,7 @@
     }
     
     //forward the result to original sender
-    [[self rootSender] dataRequestComplete:result];
+    [[self previousSender] dataRequestComplete:result];
     
     //decouple node linking by set all properties by weak
     [self decoupleRequestLinking];
@@ -105,47 +105,47 @@
 
 #pragma memory management
 
--(void)setRootSender:(HKDataRequestSender *)rootSender
+-(void)setPreviousSender:(HKDataRequestSender *)previousSender
 {
-    objc_setAssociatedObject(self, @selector(rootSender), rootSender,OBJC_ASSOCIATION_RETAIN);
+    objc_setAssociatedObject(self, @selector(previousSender), previousSender,OBJC_ASSOCIATION_RETAIN);
 }
 
--(void)setRoofSender:(HKDataRequestSender *)roofSender
+-(void)setNextSender:(HKDataRequestSender *)nextSender
 {
-    objc_setAssociatedObject(self, @selector(roofSender), roofSender,OBJC_ASSOCIATION_RETAIN);
+    objc_setAssociatedObject(self, @selector(nextSender), nextSender,OBJC_ASSOCIATION_RETAIN);
 }
 
--(HKDataRequestSender *)roofSender
+-(HKDataRequestSender *)nextSender
 {
-    id objc = objc_getAssociatedObject(self, @selector(roofSender));
+    id objc = objc_getAssociatedObject(self, @selector(nextSender));
     return objc;
 }
--(HKDataRequestSender *)rootSender
+-(HKDataRequestSender *)previousSender
 {
-    id objc = objc_getAssociatedObject(self, @selector(rootSender));
+    id objc = objc_getAssociatedObject(self, @selector(previousSender));
     return objc;
 }
 
 - (void) tightRequestLinking
 {
-    [self foreach:[self finalRoot] block:^(HKDataRequestSender *sender) {
+    [self foreach:[self firstSender] block:^(HKDataRequestSender *sender) {
         [self tightRequestLinking:sender];
     }];
 }
 
 -(void) tightRequestLinking:(HKDataRequestSender *)sender
 {
-    id objc = sender.rootSender;
+    id objc = sender.previousSender;
     if(objc)
-    objc_setAssociatedObject(sender, @selector(rootSender), objc, OBJC_ASSOCIATION_RETAIN);
-    objc = sender.roofSender;
+    objc_setAssociatedObject(sender, @selector(previousSender), objc, OBJC_ASSOCIATION_RETAIN);
+    objc = sender.nextSender;
     if(objc)
-    objc_setAssociatedObject(sender, @selector(rootSender), objc, OBJC_ASSOCIATION_RETAIN);
+    objc_setAssociatedObject(sender, @selector(nextSender), objc, OBJC_ASSOCIATION_RETAIN);
 }
 
 - (void) decoupleRequestLinking
 {
-    [self foreach:[self finalRoot] block:^(HKDataRequestSender *sender) {
+    [self foreach:[self firstSender] block:^(HKDataRequestSender *sender) {
         [self decoupleRequestLinking:sender];
     }];
 }
@@ -153,12 +153,12 @@
 - (void) decoupleRequestLinking:(HKDataRequestSender *)sender
 {
 
-        id objc = sender.rootSender;
+        id objc = sender.previousSender;
         if(objc)
-            objc_setAssociatedObject(sender, @selector(rootSender), objc, OBJC_ASSOCIATION_ASSIGN);
-        objc = sender.roofSender;
+            objc_setAssociatedObject(sender, @selector(previousSender), objc, OBJC_ASSOCIATION_ASSIGN);
+        objc = sender.nextSender;
         if(objc)
-            objc_setAssociatedObject(sender, @selector(rootSender), objc, OBJC_ASSOCIATION_ASSIGN);
+            objc_setAssociatedObject(sender, @selector(nextSender), objc, OBJC_ASSOCIATION_ASSIGN);
 }
 
 
@@ -176,38 +176,38 @@
     if(doSomething)
         doSomething(root);
     
-    [self foreach:root.roofSender block:doSomething];
+    [self foreach:root.nextSender block:doSomething];
 }
 
--(HKDataRequestSender *)finalRoot
+-(HKDataRequestSender *)firstSender
 {
-    if([self isFinalRoot])
+    if([self isFirstSender])
         return self;
     else
-        return [self rootSender];
+        return [self previousSender];
 }
 
--(HKDataRequestSender *)finalRoof
+-(HKDataRequestSender *)lastSender
 {
-    if([self isFinalRoof])
+    if([self isLastSender])
         return self;
     else
-        return [self roofSender];
+        return [self nextSender];
 }
 
--(BOOL)isFinalRoot
+-(BOOL)isFirstSender
 {
-    return [self rootSender] == nil;
+    return [self previousSender] == nil;
 }
 
--(BOOL)isMediator
+-(BOOL)isForwarder
 {
-    return ![self isFinalRoot];
+    return ![self isFirstSender];
 }
 
--(BOOL)isFinalRoof
+-(BOOL)isLastSender
 {
-    return [self roofSender] == nil;
+    return [self nextSender] == nil;
 }
 
 -(NSUInteger)totalLevel
@@ -222,12 +222,12 @@
 
 -(NSUInteger)upLevel
 {
-    return (self.roofSender != nil) + [self.roofSender upLevel];
+    return (self.nextSender != nil) + [self.nextSender upLevel];
 }
 
 -(NSUInteger)downLevel
 {
-    return (self.rootSender != nil) + [self.rootSender downLevel];
+    return (self.previousSender != nil) + [self.previousSender downLevel];
 }
 
 #ifdef DEBUG
@@ -236,13 +236,13 @@
 
 -(void)stackTrace
 {
-    [[self finalRoot] printTraceInfo];
+    [[self firstSender] printTraceInfo];
 }
 
 -(void)printTraceInfo
 {
     NSLog(@"%@", [self traceInfo]);
-    [[self roofSender] printTraceInfo];
+    [[self nextSender] printTraceInfo];
 }
 
 -(NSString *)statusInfo
