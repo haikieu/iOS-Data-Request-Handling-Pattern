@@ -11,7 +11,7 @@
 #import <objc/message.h>
 #import <objc/runtime.h>
 
-@implementation HKDataRequest
+@implementation HKDataRequester
 
 
 

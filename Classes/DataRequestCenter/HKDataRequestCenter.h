@@ -7,29 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "HKDataRequestCenterDelegate.h"
 
 @class AFHTTPSessionManager;
 @class AFNetworkReachabilityManager;
-@protocol HKDataRequestCenterDelegate <NSObject>
-
--(void)networkSearching;
--(void)networkIsConnected:(BOOL) isOnline;
-
--(void)networkActivityStarted;
--(void)networkActivityEnded;
-
--(void)blockingGUIStarted;
--(void)blockingGUIEnded;
--(void)blockingGUIUpdating:(NSString*)status;
-
-@end
 
 @interface HKDataRequestCenter : NSObject
 
 @property(nonatomic,weak) id<HKDataRequestCenterDelegate> delegate;
 
 +(instancetype)defaultCenter;
-
 
 @property(nonatomic,strong) NSMutableArray * blockingRequestQueue;
 @property(nonatomic,strong) NSMutableArray * requestQueue;

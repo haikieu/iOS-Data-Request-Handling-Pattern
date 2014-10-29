@@ -16,12 +16,7 @@ typedef NS_ENUM(NSUInteger, HKDataRequestStatus) {
     HKDataRequestStatusCancel    = 1 << 2
 };
 
-@protocol HKDataRequest <HKDataRequestDelegate>
-
-
-@end
-
-@interface HKDataRequest : NSObject <HKDataRequest>
+@interface HKDataRequester : NSObject <HKDataRequestDelegate>
 
 #pragma request body
 @property(nonatomic,strong) id<HKDataRequestDelegate> sender;
@@ -48,7 +43,7 @@ typedef NS_ENUM(NSUInteger, HKDataRequestStatus) {
 
 @end
 
-@interface HKDataRequestSender : HKDataRequest
+@interface HKDataRequestSender : HKDataRequester
 
 #pragma node linking algorithm
 @property(nonatomic,assign) HKDataRequestSender * previousSender;

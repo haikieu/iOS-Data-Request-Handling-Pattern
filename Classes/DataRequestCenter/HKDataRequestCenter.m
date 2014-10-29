@@ -61,7 +61,7 @@ static id __obj;
 
 #pragma mark - HKDataRequestCenter
 
--(void)addRequester:(HKDataRequest*)requester
+-(void)addRequester:(HKDataRequester*)requester
 {
     [self networkActivityStarted];
     
@@ -75,12 +75,12 @@ static id __obj;
     }
 }
 
--(void)requester:(HKDataRequest*)requester dataRequestComplete:(id<HKDataRequestResult>) result
+-(void)requester:(HKDataRequester*)requester dataRequestComplete:(id<HKDataRequestResult>) result
 {
     [requester dataRequestComplete:result];
 }
 
--(void)removeRequest:(HKDataRequest*)requester
+-(void)removeRequest:(HKDataRequester*)requester
 {
     if(requester.isBlockingUI)
     {
@@ -94,12 +94,12 @@ static id __obj;
     [self networkActivityEnded];
 }
 
--(void)logRequest:(HKDataRequest*)requester task:(NSURLSessionDataTask*)task url:(NSString*)URLString parameters:(id)parameters
+-(void)logRequest:(HKDataRequester*)requester task:(NSURLSessionDataTask*)task url:(NSString*)URLString parameters:(id)parameters
 {
     //TODO
 }
 
--(void)logResponse
+-(void)logResponse:(HKDataRequester*)requester task:(NSURLSessionDataTask*)task response:(id)responseObject
 {
     //TODO
 }
@@ -109,7 +109,9 @@ static id __obj;
 -(void)success:(NSURLSessionDataTask*)task responseObject:(id)responseObject
 {
     //TODO - handling success request
-    HKDataRequest* requester = objc_getAssociatedObject(task, (__bridge const void *)(kRequester));
+    HKDataRequester* requester = objc_getAssociatedObject(task, (__bridge const void *)(kRequester));
+    
+    [self logResponse:requester task:task response:responseObject];
     
     id<HKDataRequestResult> result;
     [self requester:requester dataRequestComplete:result];
@@ -122,7 +124,7 @@ static id __obj;
 -(void)failure:(NSURLSessionDataTask*)task error:(NSError*)error
 {
     //TODO - handling failture request
-    HKDataRequest* requester = objc_getAssociatedObject(task, (__bridge const void *)(kRequester));
+    HKDataRequester* requester = objc_getAssociatedObject(task, (__bridge const void *)(kRequester));
     
     id<HKDataRequestResult> result;
     [self requester:requester dataRequestComplete:result];
@@ -134,7 +136,7 @@ static id __obj;
 
 -(void)taskDidCompleteBlock:(NSURLSession *)session task:(NSURLSessionTask *)task error:(NSError *)error
 {
-    HKDataRequest* requester = objc_getAssociatedObject(task, (__bridge const void *)(kRequester));
+    HKDataRequester* requester = objc_getAssociatedObject(task, (__bridge const void *)(kRequester));
     
     //TODO - do some stuff
     
@@ -147,7 +149,7 @@ static id __obj;
 
 static const NSString * kRequester = @"kRequester";
 
-- (void)requester:(HKDataRequest*)requester GET:(NSString *)URLString
+- (void)requester:(HKDataRequester*)requester GET:(NSString *)URLString
                    parameters:(id)parameters
 
 {
@@ -164,7 +166,7 @@ static const NSString * kRequester = @"kRequester";
     [self logRequest:requester task:task url:URLString parameters:parameters];
 }
 
-- (void)requester:(HKDataRequest*) requester POST:(NSString *)URLString
+- (void)requester:(HKDataRequester*) requester POST:(NSString *)URLString
                     parameters:(id)parameters
 
 {
