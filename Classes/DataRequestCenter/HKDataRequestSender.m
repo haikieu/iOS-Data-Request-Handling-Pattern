@@ -11,11 +11,13 @@
 #import <objc/message.h>
 #import <objc/runtime.h>
 
-@implementation HKDataRequester
 
+@implementation HKDataRequester @end
 
-
-@end
+@implementation HKDataRequestAppCache @end
+@implementation HKDataRequestAppFilter @end
+@implementation HKdataRequestAppForwarder @end
+@implementation HKDataRequestAppManager @end
 
 @implementation HKDataRequestSender
 
@@ -26,12 +28,14 @@
 {
     self = [super init];
     if (self) {
-        self.requestStatus = HKDataRequestStatusDoing;
+        self.requestStatus = HKDataRequestStatusUnknown;
     }
     return self;
 }
 
--(instancetype)initSender:(id<HKDataRequestDelegate>)sender withRoot:(HKDataRequestSender *)root
+#pragma mark - Initializer
+
+-(instancetype)initWithSender:(id<HKDataRequestDelegate>)sender withRoot:(HKDataRequestSender *)root
 {
     self = [self init];
     if (self) {
@@ -41,6 +45,39 @@
         root.requestStatus = self.requestStatus = root ? root.requestStatus : HKDataRequestStatusDoing;
     }
     return self;
+}
+
+-(instancetype)initWithSender:(id<HKDataRequestDelegate>)sender
+{
+    self = [self initWithSender:sender withRoot:nil];
+    if (self) {
+
+    }
+    return self;
+}
+
+-(instancetype)viaCache:(id<HKDataRequestDelegate>)objc
+{
+    id returnObj = [[HKDataRequestAppCache alloc] initWithSender:objc withRoot:self];
+    return returnObj;
+}
+
+-(instancetype)viaFilter:(id<HKDataRequestDelegate>)objc
+{
+    id returnObj = [[HKDataRequestAppFilter alloc] initWithSender:objc withRoot:self];
+    return returnObj;
+}
+
+-(instancetype)viaForwarder:(id<HKDataRequestDelegate>)objc
+{
+    id returnObj = [[HKdataRequestAppForwarder alloc] initWithSender:objc withRoot:self];
+    return returnObj;
+}
+
+-(instancetype)viaManager:(id<HKDataRequestDelegate>)objc
+{
+    id returnObj = [[HKDataRequestAppManager alloc] initWithSender:objc withRoot:self];
+    return returnObj;
 }
 
 #pragma node body
@@ -74,31 +111,23 @@
     [[self nextSender] cancelRequest];
 }
 
--(void)dataRequestComplete:(id<HKDataRequestResult>)result
+-(id<HKDataRequestResult>)dataRequestComplete:(id<HKDataRequestResult>)result
 {
     //TODO - need verify this condition
     if([self requestStatus]==HKDataRequestStatusCancel)
-        return;
+        return nil;
     
     self.requestStatus = HKDataRequestStatusCompleted;
+   
+    id returnResult = [self.sender dataRequestComplete:result];
     
-    if([self.sender respondsToSelector:@selector(dataRequestPreComplete:)])
+    if(!self.isFirstSender)
     {
-        [self.sender dataRequestPreComplete:result];
-    }
-
-    [self.sender dataRequestComplete:result];
-    
-    if([self.sender respondsToSelector:@selector(dataRequestPostComplete:)])
-    {
-        [self.sender dataRequestPostComplete:result];
+        //forward the result to original sender
+        [[self previousSender] dataRequestComplete:returnResult];
     }
     
-    //forward the result to original sender
-    [[self previousSender] dataRequestComplete:result];
-    
-    //decouple node linking by set all properties by weak
-    [self decoupleRequestLinking];
+    return nil;
 }
 
 #pragma memory management
@@ -163,7 +192,7 @@
 
 -(void)dealloc
 {
-    [self decoupleRequestLinking];
+    [self decoupleRequestLinking:self];
     objc_removeAssociatedObjects(self);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -175,7 +204,7 @@
     if(doSomething)
         doSomething(root);
     
-    [self foreach:root.nextSender block:doSomething];
+//    [self foreach:root.nextSender block:doSomething];
 }
 
 -(HKDataRequestSender *)firstSender

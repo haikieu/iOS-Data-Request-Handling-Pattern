@@ -11,11 +11,6 @@
 
 @required
 
-- (void) dataRequestComplete:(id<HKDataRequestResult>) result;
-
-@optional
-
-- (void) dataRequestPreComplete:(id<HKDataRequestResult>) result;
-- (void) dataRequestPostComplete:(id<HKDataRequestResult>) result;
+- (id<HKDataRequestResult>) dataRequestComplete:(id<HKDataRequestResult>) result;
 
 @end

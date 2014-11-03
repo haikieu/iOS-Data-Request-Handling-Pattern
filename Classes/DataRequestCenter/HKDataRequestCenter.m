@@ -11,7 +11,8 @@
 #import <AFNetworking/AFNetworking.h>
 #import <objc/message.h>
 #import <objc/runtime.h>
-
+#import <Foundation/Foundation.h>
+#import <Foundation/NSURLSession.h>
 @implementation HKDataRequestCenter
 
 static id __obj;
@@ -149,8 +150,7 @@ static id __obj;
 
 static const NSString * kRequester = @"kRequester";
 
-- (void)requester:(HKDataRequester*)requester GET:(NSString *)URLString
-                   parameters:(id)parameters
+- (void)requester:(HKDataRequester*)requester GET:(NSString *)URLString parameters:(id)parameters
 
 {
     [self addRequester:requester];
@@ -166,8 +166,7 @@ static const NSString * kRequester = @"kRequester";
     [self logRequest:requester task:task url:URLString parameters:parameters];
 }
 
-- (void)requester:(HKDataRequester*) requester POST:(NSString *)URLString
-                    parameters:(id)parameters
+- (void)requester:(HKDataRequester*) requester POST:(NSString *)URLString parameters:(id)parameters
 
 {
     [self addRequester:requester];

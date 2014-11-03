@@ -46,11 +46,11 @@ typedef NS_ENUM(NSUInteger, HKDataRequestStatus) {
 @interface HKDataRequestSender : HKDataRequester
 
 #pragma node linking algorithm
-@property(nonatomic,assign) HKDataRequestSender * previousSender;
-@property(nonatomic,assign) HKDataRequestSender * nextSender;
+@property(nonatomic,weak) HKDataRequestSender * previousSender;
+@property(nonatomic,weak) HKDataRequestSender * nextSender;
 
-@property(nonatomic,readonly) HKDataRequestSender * firstSender;
-@property(nonatomic,readonly) HKDataRequestSender * lastSender;
+@property(nonatomic,weak,readonly) HKDataRequestSender * firstSender;
+@property(nonatomic,weak,readonly) HKDataRequestSender * lastSender;
 
 - (NSUInteger) totalLevel;
 - (NSUInteger) currentLevel;
@@ -61,5 +61,18 @@ typedef NS_ENUM(NSUInteger, HKDataRequestStatus) {
 - (BOOL) isLastSender;
 - (BOOL) isForwarder;
 
+-(instancetype)initWithSender:(id<HKDataRequestDelegate>)sender;
+
+-(instancetype) viaFilter:(id<HKDataRequestDelegate>) objc;
+-(instancetype) viaCache:(id<HKDataRequestDelegate>) objc;
+-(instancetype) viaForwarder:(id<HKDataRequestDelegate>) objc;
+-(instancetype) viaManager:(id<HKDataRequestDelegate>) objc;
 
 @end
+
+@interface HKDataRequestAppFilter    : HKDataRequestSender @end
+@interface HKDataRequestAppCache     : HKDataRequestSender @end
+@interface HKdataRequestAppForwarder : HKDataRequestSender @end
+@interface HKDataRequestAppManager   : HKDataRequestSender @end
+
+
